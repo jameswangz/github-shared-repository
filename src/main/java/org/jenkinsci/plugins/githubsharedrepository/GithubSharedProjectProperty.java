@@ -21,20 +21,23 @@ public class GithubSharedProjectProperty extends JobProperty<AbstractProject<?,?
 	
 	@DataBoundConstructor
 	public GithubSharedProjectProperty(String projectUrl) {
-		this.projectUrl = projectUrl;
+        this.projectUrl = new GithubUrl(projectUrl).baseUrl();
 	}
 
 	@Override
 	public Collection<? extends Action> getJobActions(AbstractProject<?, ?> job) {
 		Collection<Action> actions = new ArrayList<Action>();
-		actions.add(new BuildData());
-		actions.add(new GithubLinkAction(this));
+		actions.add(new GithubSharedLinkAction(this));
 		return actions ;
 	}
 
-	public String getProjectUrl() {
-		return projectUrl;
-	}
+    /**
+     * @return the projectUrl
+     */
+    public GithubUrl getProjectUrl() {
+        return new GithubUrl(projectUrl);
+    }
+
 	
     @Extension
     public static final class DescriptorImpl extends JobPropertyDescriptor {

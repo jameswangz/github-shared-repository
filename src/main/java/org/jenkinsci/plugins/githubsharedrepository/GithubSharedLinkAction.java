@@ -7,11 +7,11 @@ import hudson.model.Action;
  * 
  * @author Stefan Saasen <stefan@coravy.com>
  */
-public final class GithubLinkAction implements Action {
+public final class GithubSharedLinkAction implements Action {
 
     private final transient GithubSharedProjectProperty projectProperty;
 
-    public GithubLinkAction(GithubSharedProjectProperty githubProjectProperty) {
+    public GithubSharedLinkAction(GithubSharedProjectProperty githubProjectProperty) {
         this.projectProperty = githubProjectProperty;
     }
 
@@ -20,7 +20,7 @@ public final class GithubLinkAction implements Action {
      * @see hudson.model.Action#getDisplayName()
      */
     public String getDisplayName() {
-        return "GitHub";
+        return "GitHub (Shared Repository)";
     }
 
     /*
@@ -28,7 +28,8 @@ public final class GithubLinkAction implements Action {
      * @see hudson.model.Action#getIconFileName()
      */
     public String getIconFileName() {
-        return "/plugin/github/logov3.png";
+    	//TODO get current plugin path from Jenkins API
+        return "/plugin/github-shared-repository/github-logo.png";
     }
 
     /*
@@ -36,7 +37,7 @@ public final class GithubLinkAction implements Action {
      * @see hudson.model.Action#getUrlName()
      */
     public String getUrlName() {
-        return projectProperty.getProjectUrl();
+        return projectProperty.getProjectUrl().baseUrl();
     }
 
 }
