@@ -14,29 +14,43 @@ import java.io.IOException;
 
 import net.sf.json.JSONObject;
 
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 @SuppressWarnings("unchecked")
-public class HyperlinkGenerator extends Recorder {
+public class CommitLinkGeneratorProperty extends Recorder {
+
+	private String commitIdParamName;
+
+	@DataBoundConstructor
+	public CommitLinkGeneratorProperty(String commitIdParamName) {
+		this.commitIdParamName = commitIdParamName;
+	}
 
 	@Override
 	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) 
 		throws InterruptedException, IOException {
 		
-		//TODO pass parameters
-		build.addAction(new GenerateHyperlinkAction());
+		//FIXME pass from {@link GithubSharedProjectProperty}
+		String projectUrl = "https://github.com/jameswangz/github-shared-repository/";
+		String commitId = build.getEnvironment(listener).get(commitIdParamName);
+		build.addAction(new CommitLinkGenerator(projectUrl, commitId));
 		return true;
 	}
 
 	public BuildStepMonitor getRequiredMonitorService() {
 		return BuildStepMonitor.NONE;
 	}
+	
+    public String getCommitIdParamName() {
+		return commitIdParamName;
+	}
 
-    @Extension
+	@Extension
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
     	
 		public String getDisplayName() {
-			return "Github Hyperlink Generator";
+			return "Github Commit Link Generator";
 		}
 
         @Override
@@ -48,7 +62,11 @@ public class HyperlinkGenerator extends Recorder {
 		public Publisher newInstance(StaplerRequest req, JSONObject formData) 
 			throws hudson.model.Descriptor.FormException {
 			
-			return new HyperlinkGenerator();
+			CommitLinkGeneratorProperty property = req.bindJSON(CommitLinkGeneratorProperty.class, formData);
+            if (property.commitIdParamName == null) {
+                property = null; // not configured
+            }
+            return property;
 		}
 
 		public boolean isApplicable(Class<? extends AbstractProject> jobType) {

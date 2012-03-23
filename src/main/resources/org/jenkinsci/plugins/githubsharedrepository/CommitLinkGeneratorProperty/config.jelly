@@ -1,0 +1,5 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <f:entry title="Git Commit Id Parameter Name" help="/plugin/github-shared-repository/help-commit-id-parameter-name.html">
+    <f:textbox name="github-shared-repository.commitIdParamName" value="${instance.commitIdParamName}" />
+  </f:entry>
+</j:jelly>

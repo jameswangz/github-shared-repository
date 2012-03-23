@@ -15,6 +15,9 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
+import com.google.common.base.Strings;
+import org.jenkinsci.plugins.githubsharedrepository.GithubUrl;
+
 public class GithubSharedProjectProperty extends JobProperty<AbstractProject<?,?>> {
 	
 	private String projectUrl;
@@ -27,7 +30,9 @@ public class GithubSharedProjectProperty extends JobProperty<AbstractProject<?,?
 	@Override
 	public Collection<? extends Action> getJobActions(AbstractProject<?, ?> job) {
 		Collection<Action> actions = new ArrayList<Action>();
-		actions.add(new GithubSharedLinkAction(this));
+		if (!Strings.isNullOrEmpty(projectUrl)) {
+			actions.add(new GithubSharedLinkAction(this));
+		}
 		return actions ;
 	}
 
@@ -56,10 +61,8 @@ public class GithubSharedProjectProperty extends JobProperty<AbstractProject<?,?
         }
 
         @Override
-        public JobProperty<?> newInstance(StaplerRequest req,
-                JSONObject formData) throws FormException {
-        	GithubSharedProjectProperty tpp = req.bindJSON(
-        			GithubSharedProjectProperty.class, formData);
+        public JobProperty<?> newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+        	GithubSharedProjectProperty tpp = req.bindJSON(GithubSharedProjectProperty.class, formData);
             if (tpp.projectUrl == null) {
                 tpp = null; // not configured
             }
