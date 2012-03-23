@@ -33,7 +33,7 @@ public class GithubSharedProjectProperty extends JobProperty<AbstractProject<?,?
 		if (!Strings.isNullOrEmpty(projectUrl)) {
 			actions.add(new GithubSharedLinkAction(this));
 		}
-		return actions ;
+		return actions;
 	}
 
     /**
