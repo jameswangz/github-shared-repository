@@ -17,7 +17,11 @@ public class CommitLinkAction implements Action {
 	}
 
 	public String getDisplayName() {
-		return "Commit link";
+		return "Commit Link";
+	}
+	
+	public String getLongDisplayName() {
+		return String.format("%s%s", "commit: ", commitId);
 	}
 
 	public String getUrlName() {
