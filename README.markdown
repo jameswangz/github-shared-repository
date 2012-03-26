@@ -130,3 +130,6 @@ the job do is just run the trigger script.
 
 # Known Issues 
 Currently the trigger script hardcoded the git repository branch to 'master', it may be specified as expected.
+
+# Contact
+If you have any questions, please contact me at [mailto:james.wang.z81@gmail.com]. 
