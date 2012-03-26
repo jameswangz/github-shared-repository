@@ -122,6 +122,7 @@ Now we have the git repository in place, we have 2 ways to make it as a shared r
  
 ## Schedule the trigger script
 There are 2 ways to schedule the trigger script
+
 * If you specify the :only_once value of :running_options as false, just run it in the backend(nohup ./jenkins_trigger.rb &)
   it should work properly
 * If you specify the :only_once value of :running_options as true, you need to create another Jenkins job and configure it run periodically, 
