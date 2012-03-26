@@ -18,14 +18,27 @@ find a way to configure separate Jenkins jobs for different modules and trigger 
 and this is what's this plugin done.   
 
 # Summary 
-This plugin mainly consists of two parts : the trigger scripts(written in Ruby) used to trigger the affected jobs 
+This plugin mainly consists of two parts : the trigger scripts(written with Ruby) used to trigger the affected jobs 
 remotely and the plugin itself to generate the project and commit hyperlinks to Github(almost same with the 
 original Github plugin), the trigger scripts could also be part of the plugin but currently it works well, if I'm
 in scheduler I may move the feature to the plugin to decrease the installation complexity. 
 
 # Installation Guide
 ## Install the trigger scripts
+The trigger scripts are written with ruby, most of the Linux releases have provided the builtin ruby environment, 
+if you are deploying your Jenkins server on windows or some Linux releases not included ruby please install them 
+from [the Ruby website](http://www.ruby-lang.org/en/downloads/).
+
+To install the trigger script you just copy [the 2 ruby files](https://github.com/jameswangz/github-shared-repository/tree/master/trigger_scripts) 
+to your project root folder, we need to do some configurations later but just leave them their at the moment.
 
 ## Install the plugin
 
-# Know Issues 
+# Configuration
+## Configure the trigger scripts
+
+## Configure the plugin
+
+# Make them work
+
+# Known Issues 
