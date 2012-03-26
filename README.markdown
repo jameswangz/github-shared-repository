@@ -73,7 +73,7 @@ Some of them are obviously,  I'll explain them one by one
 * module_job_mappings : the mappings between your modules and Jenkins job names, multiple levels folders are allowed
   like 'impl/src', left side is the module name and the right side is Jenkins job name.
 * running_options : here you can specify the running behaviour of the script, if you want to let Jenkins manage the 
-  running scheduler(create a master job and run the script periodally) just specify the :only_once value to true
+  running scheduler(create a master job and run the script periodically) just specify the :only_once value to true
   and you don't need the :interval value, if you want to run the ruby files in a separate process(nohup ./jenkins_trigger.rb &)
   you specify the :only_once to false and specify a reasonable value for the :interval value, here I specify it as 5 seconds.
 * auth_options : if your Jenkins server doesn't need authentication just specify the :required value to false, on the contrary,
@@ -118,7 +118,7 @@ Now we have the git repository in place, we have 2 ways to make it as a shared r
  
 ## Schedule the trigger script
 If you specify the :only_once value of :running_options as false, just run it in the backend(nohup ./jenkins_trigger.rb &)
-it should work properly, on the other hand, you need to create another Jenkins job and configure it run periodally, what's 
+it should work properly, on the other hand, you need to create another Jenkins job and configure it run periodically, what's 
 the job do is just run the trigger script.
 
 ## Verify all features
