@@ -121,9 +121,12 @@ Now we have the git repository in place, we have 2 ways to make it as a shared r
 * Create soft links for all jobs, source ->  git repository folder, target -> job/workspace 
  
 ## Schedule the trigger script
-If you specify the :only_once value of :running_options as false, just run it in the backend(nohup ./jenkins_trigger.rb &)
-it should work properly, on the other hand, you need to create another Jenkins job and configure it run periodically, what's 
-the job do is just run the trigger script.
+There are 2 ways to schedule the trigger script
+* If you specify the :only_once value of :running_options as false, just run it in the backend(nohup ./jenkins_trigger.rb &)
+  it should work properly
+* If you specify the :only_once value of :running_options as true, you need to create another Jenkins job and configure it run periodically, 
+  what's the job do is just run the trigger script, you are not supposed to build the existing master job periodically because the git plugin
+  will pull from the repository before the script runs, this will prevent the trigger script from detecting changes.
 
 ## Verify all features
 
