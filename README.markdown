@@ -33,9 +33,37 @@ To install the trigger script you just copy [the 2 ruby files](https://github.co
 to your project root folder, we need to do some configurations later but just leave them their at the moment.
 
 ## Install the plugin
-
+[Download the latest version hpi (currently 1.0)](https://github.com/jameswangz/github-shared-repository/tree/master/downloads)
+and install it on Jenkins UI(Manage Jenkins -> Manage Plugins -> Advanced -> Upload Plugin, I may put the artifacts 
+in Jenkins Plugin Repository but currently please install it manully), restart Jenkins to enable the plugin.
+ 
 # Configuration
 ## Configure the trigger scripts
+There are 2 ruby files but we only need to modify the jenkins_trigger.rb, this script inclues all the configurations
+to make the trigger feature works, the git_jenkins_remote_trigger.rb will do all the things for you.
+
+Let's look at the sample jenkins_trigger.rb
+
+	#!/usr/bin/ruby
+	
+	require './git_jenkins_remote_trigger'
+	
+	if __FILE__ == $0
+		jenkins = 'http://localhost:8080/jenkins'
+		module_job_mappings = { 'api' => 'api', 'impl/src' => 'impl-src' }
+		running_options = { :only_once => false, :interval => 5 }
+		auth_options = { :required => true, :username => 'james', :api_token => 'dcebe4f09bdc324d2d9567780f04a0c1' }
+		other_options = { :COMMIT_ID_PARAM_NAME => 'BUILD_ID' }
+		GitJenkinsRemoteTrigger.new(jenkins, module_job_mappings, running_options, auth_options, other_options).run
+	end
+
+Some of them are obviously,  I'll explain them one by one  
+
+* jenkins : your jenkins server address
+* module_job_mappings : the mappings between your modules and Jenkins job names, multiple levels folders are allowed
+  like 'impl/src', left side is module name and right side is Jenkins job name.
+
+
 
 ## Configure the plugin
 
