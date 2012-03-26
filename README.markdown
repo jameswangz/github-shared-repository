@@ -23,6 +23,10 @@ remotely and the plugin itself to generate the project and commit hyperlinks to 
 original Github plugin), the trigger scripts could also be part of the plugin but currently it works well, if I'm
 in scheduler I may move the feature to the plugin to decrease the installation complexity. 
 
+The idea is alrough we have multiple jobs we'll only have one shared git repository(and this is why this plugin named for), 
+this is helpful because if we have a full repository copy for each job the disk usage will be quite large, I'll
+explain how to create a shared git repository in the Configuration part.  
+
 # Installation Guide
 ## Install the trigger scripts
 The trigger scripts are written with ruby, most of the Linux releases have provided the builtin ruby environment, 
@@ -61,12 +65,24 @@ Some of them are obviously,  I'll explain them one by one
 
 * jenkins : your jenkins server address
 * module_job_mappings : the mappings between your modules and Jenkins job names, multiple levels folders are allowed
-  like 'impl/src', left side is module name and right side is Jenkins job name.
+  like 'impl/src', left side is the module name and the right side is Jenkins job name.
+* running_options : here you can specify the running behaviour of the script, if you want to let Jenkins manage the 
+  running scheduler(create a master job and run the script periodally) just specify the :only_once value to true
+  and you don't need the :interval value, if you want to run the ruby files in a separate process(nohup ./jenkins_trigger.rb &)
+  you specify the :only_once to false and specify a reasonable value for the :interval value, here I specify it as 5 seconds.
+* auth_options : if your Jenkins server doesn't need authentication just specify the :required value to false, on the contrary,
+  specify the :required value to true and provide the :username and :api_token values(the api token can be got from user profile page).
+* other_options : here your can specify the git commit id parameter name, this parameter is very important, it will be 
+  used in the Jenkins job configuration as we will explain later.   
 
-
+At this point you have configured the trigger script successfully, save it and get ready to configure the plugin in Jenkins.
 
 ## Configure the plugin
 
+
 # Make them work
+## Create the shared git repository
+
+## Schedule the trigger script
 
 # Known Issues 
