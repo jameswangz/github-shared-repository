@@ -1,7 +1,8 @@
 # Goal
 [Jenkins Github Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Github+Plugin) already has nice features to 
 let Jenkins works well with Github, so why do we need this [Github shared repository plugin](https://github.com/jameswangz/github-shared-repository)? 
-Well, this is because we have some special scenarios that github plugin couldn't handle. 
+Well, this is because we have some special scenarios that github plugin couldn't handle, actually I've asked this
+question on [Stack Overflow](http://stackoverflow.com/questions/9374028/how-to-trigger-a-individual-job-in-jenkins-with-github-repository). 
 
 As everyone knows, for the algorithm consideration, from the enduser's perspective, git repository 
 looks like a 'blob' object, that means it doesn't like subversion(or some other SCM tools) 
@@ -17,3 +18,14 @@ find a way to configure separate Jenkins jobs for different modules and trigger 
 and this is what's this plugin done.   
 
 # Summary 
+This plugin mainly consists of two parts : the trigger scripts(written in Ruby) used to trigger the affected jobs 
+remotely and the plugin itself to generate the project and commit hyperlinks to Github(almost same with the 
+original Github plugin), the trigger scripts could also be part of the plugin but currently it works well, if I'm
+in scheduler I may move the feature to the plugin to decrease the installation complexity. 
+
+# Installation Guide
+## Install the trigger scripts
+
+## Install the plugin
+
+# Know Issues 
