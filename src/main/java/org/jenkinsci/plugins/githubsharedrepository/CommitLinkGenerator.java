@@ -34,7 +34,8 @@ public class CommitLinkGenerator extends Recorder {
 		GithubSharedProjectProperty jobProperty = build.getParent().getProperty(GithubSharedProjectProperty.class);
 		if (jobProperty != null) {
 			String commitId = build.getEnvironment(listener).get(commitIdParamName);
-			build.addAction(new CommitLinkAction(jobProperty.getProjectUrl().baseUrl(), commitId));			
+			
+			build.addAction(new CommitLinkAction(jobProperty.getProjectUrl(), commitId));			
 		}
 		return true;
 	}

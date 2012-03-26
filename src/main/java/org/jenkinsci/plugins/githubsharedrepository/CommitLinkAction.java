@@ -4,11 +4,11 @@ import hudson.model.Action;
 
 public class CommitLinkAction implements Action {
 
-	private final String projectUrl;
+	private final GithubUrl githubUrl;
 	private final String commitId;
 
-	public CommitLinkAction(String projectUrl, String commitId) {
-		this.projectUrl = projectUrl;
+	public CommitLinkAction(GithubUrl githubUrl, String commitId) {
+		this.githubUrl = githubUrl;
 		this.commitId = commitId;
 	}
 
@@ -25,7 +25,7 @@ public class CommitLinkAction implements Action {
 	}
 
 	public String getUrlName() {
-		return String.format("%s%s%s", projectUrl, "commit/", commitId);
+		return githubUrl.commitId(commitId);
 	}
 
 }
