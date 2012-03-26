@@ -1,4 +1,4 @@
-# Goal
+# Goals
 [Jenkins Github Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Github+Plugin) already has nice features to 
 let Jenkins works well with Github, so why do we need this [Github shared repository plugin](https://github.com/jameswangz/github-shared-repository)? 
 Well, this is because we have some special scenarios that github plugin couldn't handle, actually I've asked this
@@ -17,13 +17,16 @@ high learning curve, so what we want to do is just leave the whole project as a 
 find a way to configure separate Jenkins jobs for different modules and trigger only the affected jobs accordingly,
 and this is what's this plugin done.   
 
-# Summary 
-This plugin mainly consists of two parts : the trigger scripts(written with Ruby) used to trigger the affected jobs 
-remotely and the plugin itself to generate the project and commit hyperlinks to Github(almost same with the 
-original Github plugin), the trigger scripts could also be part of the plugin but currently it works well, if I'm
+# Features 
+This plugin has two features
+
+* The trigger scripts(written with Ruby) will trigger the affected jobs remotely (by using the 'git log --quiet HEAD^..HEAD module' command) 
+* The plugin itself will generate the project and commit hyperlinks to Github(almost same with the original Github plugin)
+
+The trigger scripts could also be part of the plugin but currently it works well, if I'm
 in scheduler I may move the feature to the plugin to decrease the installation complexity. 
 
-The idea is alrough we have multiple jobs we'll only have one shared git repository(and this is why this plugin named for), 
+The idea is alrough we have multiple jobs we'll only have one shared git repository(and this is where this Plugin's name comes from), 
 this is helpful because if we have a full repository copy for each job the disk usage will be quite large, I'll
 explain how to create a shared git repository in the Configuration part.  
 
@@ -92,7 +95,8 @@ the downstream jobs of 'api', we need to configure the following options for the
   Github Project property if you have the original Github Plugin installed.
 * Job Parameters : check 'This build is parameterized' and add a String Parameter, the parameter name must be same with
   the value of the :COMMIT_ID_PARAM_NAME we configured in the trigger script, optionally you can specify a default value
-  for this parameter like 'Manually'.  
+  for this parameter like 'Manually', this parameter will be exported to environment variable by Jenkins thus you can 
+  use it in the build process for some versioning purpose.  
 * Generate Github Commit Link : in the Post-build Actions, check 'Generate Github Commit Link', set the Git Commit Id 
   Parameter Name to the same value of the :COMMIT_ID_PARAM_NAME. 
 * Trigger Parameterized : check 'Trigger parameterized build on other projects', fill in 'impl,web' for 'Projects to build',
