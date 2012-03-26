@@ -36,11 +36,17 @@ from [the Ruby website](http://www.ruby-lang.org/en/downloads/).
 To install the trigger script you just copy [the 2 ruby files](https://github.com/jameswangz/github-shared-repository/tree/master/trigger_scripts) 
 to your project root folder, we need to do some configurations later but just leave them their at the moment.
 
-## Install the plugin
+## Install the Plugin
 [Download the latest version hpi (currently 1.0)](https://github.com/jameswangz/github-shared-repository/tree/master/downloads)
 and install it on Jenkins UI(Manage Jenkins -> Manage Plugins -> Advanced -> Upload Plugin, I may put the artifacts 
 in Jenkins Plugin Repository but currently please install it manully), restart Jenkins to enable the plugin.
- 
+
+## Install the Parameterized Trigger Plugin
+Since we are using the remote api to trigger the Jenkins jobs, we will pass the git commit id by using the Jenkins 
+job parameters to generate the commit hyperlink, however, the parameters can't be propogated to the downstream jobs 
+by default, so we need install the [Parameterized Trigger Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Trigger+Plugin) 
+to archive it, to install this Plugin you use the online Plugin installation feature. 
+
 # Configuration
 ## Configure the trigger scripts
 There are 2 ruby files but we only need to modify the jenkins_trigger.rb, this script inclues all the configurations
@@ -77,12 +83,50 @@ Some of them are obviously,  I'll explain them one by one
 
 At this point you have configured the trigger script successfully, save it and get ready to configure the plugin in Jenkins.
 
-## Configure the plugin
+## Configure the Plugin
+Suppose we have a multi-modules project which has 3 modules : api, impl and web, the impl and web modules depends on api module,
+and we have created 3 jobs on Jenkins named 'api', 'impl' and 'web', we expect the 'impl' and 'web' jobs are 
+the downstream jobs of 'api', we need to configure the following options for the 'api' job
 
+* Github Project (Shared Repository) : the URL for the GitHub hosted project, please note you are not configuring the 
+  Github Project property if you have the original Github Plugin installed.
+* Job Parameters : check 'This build is parameterized' and add a String Parameter, the parameter name must be same with
+  the value of the :COMMIT_ID_PARAM_NAME we configured in the trigger script, optionally you can specify a default value
+  for this parameter like 'Manually'.  
+* Generate Github Commit Link : in the Post-build Actions, check 'Generate Github Commit Link', set the Git Commit Id 
+  Parameter Name to the same value of the :COMMIT_ID_PARAM_NAME. 
+* Trigger Parameterized : check 'Trigger parameterized build on other projects', fill in 'impl,web' for 'Projects to build',
+  click 'Add Parameters' and choose 'Current build parameters'.
+
+Click Save that we are done, the configurations for the 'impl' and 'web' jobs are almost same with the 'api' job 
+except for they don't need the Trigger Parameterized configuration because they don't have downstream jobs.
 
 # Make them work
+## Verify Github Project (Shared Repository) hyperlink works 
+Open any job there should be a Github (Shared Repository) link in the panel which links to the github project you configured before.
+ 
 ## Create the shared git repository
+To create a shared git repository, firstly you use the 'git clone' command to get the project manully, alternatively, 
+install the Git plugin and create a job named 'master', configure the Git Repository and build the job manually, this
+job will only be built once because the trigger script will pull the new changes.
 
+Now we have the git repository in place, we have 2 ways to make it as a shared repository
+
+* Configure the workspaceDir in JENKINS_HOME/config.xml, set the value to the git repository folder, this solution
+  only works for the situation that the Jenkins server is dedicated for only 1 project. 
+* Create soft links for all jobs, source ->  git repository folder, target -> job/workspace 
+ 
 ## Schedule the trigger script
+If you specify the :only_once value of :running_options as false, just run it in the backend(nohup ./jenkins_trigger.rb &)
+it should work properly, on the other hand, you need to create another Jenkins job and configure it run periodally, what's 
+the job do is just run the trigger script.
+
+## Verify all features
+
+* Make a change in the 'impl' or 'web' module, push the changes to github, the jobs should be triggered accordingly,
+  the commit hyperlink should be generated in the build summary page.
+* Make a change in the 'api'module, push the changes to github, both the 'api' and downstream jobs should be triggered,
+  the commit hyperlinks should be generated in the build summary page of all jobs.
 
 # Known Issues 
+Currently the trigger script hardcoded the git repository branch to 'master', it may be specified as expected.

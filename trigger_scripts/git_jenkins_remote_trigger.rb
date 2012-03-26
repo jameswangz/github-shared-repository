@@ -5,7 +5,8 @@ require 'uri'
 # This script is used to trigger jenkins jobs remotely based on a 'shared' git reposiotry, to make it works you must put this file
 # in the respository's root folder, as far as we know, there are 2 ways to create a shared git repository
 #
-#   1. Configure the workspaceDir in JENKINS_HOME/config.xml, set the value to the git repository folder 
+#   1. Configure the workspaceDir in JENKINS_HOME/config.xml, set the value to the git repository folder, this solution
+#      only works for the situation that the Jenkins server is dedicated for only 1 project. 
 #   2. Create soft links for all jobs, source ->  git repository folder, target -> job/workspace 
 # 
 # We may create a Jenkins plugin later but it works currently. 
