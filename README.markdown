@@ -1,4 +1,4 @@
-# Goal
+# Goals
 [Jenkins Github Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Github+Plugin) already has nice features to 
 let Jenkins works well with Github, so why do we need this [Github shared repository plugin](https://github.com/jameswangz/github-shared-repository)? 
 Well, this is because we have some special scenarios that github plugin couldn't handle, actually I've asked this
@@ -6,24 +6,27 @@ question on [Stack Overflow](http://stackoverflow.com/questions/9374028/how-to-t
 
 As everyone knows, for the algorithm consideration, from the enduser's perspective, git repository 
 looks like a 'blob' object, that means it doesn't like subversion(or some other SCM tools) 
-that we can check out or update just partial files from the repository, that is also the reason why
-git is so fast, this is good but the multi-modules structure is very common in many projects, 
+that we can check out or update just partial files from the repository, this is also the reason why
+git is so fast, it's nice but the multi-modules structure is very common in many projects, 
 in this case we usually create separate Jenkins jobs for different modules, and we expect the code changes 
 in some modules will only trigger corresponding jobs rather than trigger all of them(as the project size grows,
 the building process is slower and slower), we have also considered using [Git submodules](http://help.github.com/submodules/) 
-or [Git subtrees](https://github.com/apenwarr/git-subtree) to archive this goal, but we feel they are too
+or [Git subtrees](https://github.com/apenwarr/git-subtree) to achieve this goal, but we feel they are too
 complicated for the beginners and will introduce additional complexities especially git itself has a 
 high learning curve, so what we want to do is just leave the whole project as a single repository and 
 find a way to configure separate Jenkins jobs for different modules and trigger only the affected jobs accordingly,
 and this is what's this plugin done.   
 
-# Summary 
-This plugin mainly consists of two parts : the trigger scripts(written with Ruby) used to trigger the affected jobs 
-remotely and the plugin itself to generate the project and commit hyperlinks to Github(almost same with the 
-original Github plugin), the trigger scripts could also be part of the plugin but currently it works well, if I'm
+# Features 
+This plugin has two features
+
+* The trigger scripts(written with Ruby) will trigger the affected jobs remotely (by using the 'git log --quiet HEAD^..HEAD module' command) 
+* The plugin itself will generate the project and commit hyperlinks to Github(almost same with the original Github plugin)
+
+The trigger scripts could also be part of the plugin but currently it works well, if I'm
 in scheduler I may move the feature to the plugin to decrease the installation complexity. 
 
-The idea is alrough we have multiple jobs we'll only have one shared git repository(and this is why this plugin named for), 
+The idea is alrough we have multiple jobs we'll only have one shared git repository(and this is where this Plugin's name comes from), 
 this is helpful because if we have a full repository copy for each job the disk usage will be quite large, I'll
 explain how to create a shared git repository in the Configuration part.  
 
@@ -45,7 +48,7 @@ in Jenkins Plugin Repository but currently please install it manully), restart J
 Since we are using the remote api to trigger the Jenkins jobs, we will pass the git commit id by using the Jenkins 
 job parameters to generate the commit hyperlink, however, the parameters can't be propogated to the downstream jobs 
 by default, so we need install the [Parameterized Trigger Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Trigger+Plugin) 
-to archive it, to install this Plugin you use the online Plugin installation feature. 
+to achieve it, to install this Plugin you use the online Plugin installation feature. 
 
 # Configuration
 ## Configure the trigger scripts
@@ -92,7 +95,8 @@ the downstream jobs of 'api', we need to configure the following options for the
   Github Project property if you have the original Github Plugin installed.
 * Job Parameters : check 'This build is parameterized' and add a String Parameter, the parameter name must be same with
   the value of the :COMMIT_ID_PARAM_NAME we configured in the trigger script, optionally you can specify a default value
-  for this parameter like 'Manually'.  
+  for this parameter like 'Manually', this parameter will be exported to environment variable by Jenkins thus you can 
+  use it in the build process for some versioning purpose.  
 * Generate Github Commit Link : in the Post-build Actions, check 'Generate Github Commit Link', set the Git Commit Id 
   Parameter Name to the same value of the :COMMIT_ID_PARAM_NAME. 
 * Trigger Parameterized : check 'Trigger parameterized build on other projects', fill in 'impl,web' for 'Projects to build',
@@ -117,9 +121,13 @@ Now we have the git repository in place, we have 2 ways to make it as a shared r
 * Create soft links for all jobs, source ->  git repository folder, target -> job/workspace 
  
 ## Schedule the trigger script
-If you specify the :only_once value of :running_options as false, just run it in the backend(nohup ./jenkins_trigger.rb &)
-it should work properly, on the other hand, you need to create another Jenkins job and configure it run periodically, what's 
-the job do is just run the trigger script.
+There are 2 ways to schedule the trigger script
+
+* If you specifed the :only_once value of :running_options as false, just run it in the backend(nohup ./jenkins_trigger.rb &)
+  it should work properly
+* If you specifed the :only_once value of :running_options as true, you need to create another Jenkins job and configure it run periodically, 
+  what's the job do is just run the trigger script, you are not supposed to build the existing master job periodically because the git plugin
+  will pull from the repository before the script runs, this will prevent the trigger script from detecting changes.
 
 ## Verify all features
 
