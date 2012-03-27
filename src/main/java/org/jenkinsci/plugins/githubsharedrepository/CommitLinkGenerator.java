@@ -7,8 +7,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
-import hudson.tasks.Publisher;
-import hudson.tasks.Recorder;
+import hudson.tasks.Builder;
 
 import java.io.IOException;
 
@@ -17,8 +16,9 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
-@SuppressWarnings("unchecked")
-public class CommitLinkGenerator extends Recorder {
+import com.google.common.base.Throwables;
+
+public class CommitLinkGenerator extends Builder {
 
 	private String commitIdParamName;
 
@@ -27,19 +27,30 @@ public class CommitLinkGenerator extends Recorder {
 		this.commitIdParamName = commitIdParamName;
 	}
 
+	
 	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) 
-		throws InterruptedException, IOException {
-		
+	public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
 		GithubSharedProjectProperty jobProperty = build.getParent().getProperty(GithubSharedProjectProperty.class);
 		if (jobProperty != null) {
-			String commitId = build.getEnvironment(listener).get(commitIdParamName);
-			
-			build.addAction(new CommitLinkAction(jobProperty.getProjectUrl(), commitId));			
+			try {
+				String commitId = build.getEnvironment(listener).get(commitIdParamName);
+				build.addAction(new CommitLinkAction(jobProperty.getProjectUrl(), commitId));						
+			} catch (Exception e) {
+				throw Throwables.propagate(e);
+			}
 		}
 		return true;
 	}
 
+
+	@Override
+	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) 
+		throws InterruptedException, IOException {
+		
+		return true;
+	}
+
+	
 	public BuildStepMonitor getRequiredMonitorService() {
 		return BuildStepMonitor.NONE;
 	}
@@ -49,7 +60,7 @@ public class CommitLinkGenerator extends Recorder {
 	}
 
 	@Extension
-    public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
+    public static class DescriptorImpl extends BuildStepDescriptor<Builder> {
     	
 		public String getDisplayName() {
 			return "Generate Github Commit Link";
@@ -61,7 +72,7 @@ public class CommitLinkGenerator extends Recorder {
         }
 
 		@Override
-		public Publisher newInstance(StaplerRequest req, JSONObject formData) 
+		public CommitLinkGenerator newInstance(StaplerRequest req, JSONObject formData) 
 			throws hudson.model.Descriptor.FormException {
 			
 			CommitLinkGenerator property = req.bindJSON(CommitLinkGenerator.class, formData);
@@ -75,6 +86,8 @@ public class CommitLinkGenerator extends Recorder {
 			return true;
 		}
     }
+
+
 	
 	
 }
