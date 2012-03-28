@@ -36,8 +36,9 @@ public class CommitLinkGenerator extends Builder {
 			try {
 				EnvVars environment = build.getEnvironment(listener);
 				String commitId = environment.get(commitIdParamName);
-				build.addAction(new CommitLinkAction(jobProperty.getProjectUrl(), commitId));						
-				build.addAction(new ChangesSinceLastBuildAction(environment.get("JOB_NAME"), jobProperty.getProjectUrl(), commitId));						
+				GithubUrl projectUrl = jobProperty.getProjectUrl();
+				build.addAction(new CommitLinkAction(projectUrl, commitId));						
+				build.addAction(new ChangesSinceLastBuildAction(environment.get("JOB_NAME"), projectUrl, commitId));						
 			} catch (Exception e) {
 				throw Throwables.propagate(e);
 			}
@@ -66,7 +67,7 @@ public class CommitLinkGenerator extends Builder {
     public static class DescriptorImpl extends BuildStepDescriptor<Builder> {
     	
 		public String getDisplayName() {
-			return "Generate Github Commit Link";
+			return "Generate Github Commit Link And Changes Since Last Build";
 		}
 
         @Override

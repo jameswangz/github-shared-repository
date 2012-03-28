@@ -1,0 +1,18 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<l:layout title="Changes Since Last Build">
+    	<l:main-panel>
+       	<h1>Changes Since Last Build</h1>
+	  	<ul>
+	    	<j:forEach var="change" items="${it.changesSinceLastBuild.changes}">
+	      		<li>
+		      		<a href="${change.commitLink}">commit : ${change.commitId}</a><br />
+		      		Author : ${change.author}<br />
+		      		Date : ${change.date}<br />
+		      		Message : ${change.message}
+	      		</li>
+	      		<br />
+	    	</j:forEach>
+	  	</ul>
+		</l:main-panel>
+  	</l:layout>
+</j:jelly>
