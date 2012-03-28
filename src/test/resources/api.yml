@@ -1,0 +1,40 @@
+--- 
+recent_builds: 
+- build_id: ee06955e4e0a3c9c7f61d711354bb438a748eb60
+  changes_since_last_build: 
+  - commit_id: ee06955e4e0a3c9c7f61d711354bb438a748eb60
+    author: James Wang <jameswangz81@gmail.com>
+    date: Wed Mar 28 16:45:57 2012 +0800
+    message: test 28
+  - commit_id: 6b8c9f5d52ab66b1e19db76500fb78248a9254d3
+    author: James Wang <jameswangz81@gmail.com>
+    date: Wed Mar 28 16:45:50 2012 +0800
+    message: test 27
+- build_id: 548f465f1c4748741736a05caa5f7cb818d2e4b0
+  changes_since_last_build: 
+  - commit_id: 548f465f1c4748741736a05caa5f7cb818d2e4b0
+    author: James Wang <jameswangz81@gmail.com>
+    date: Wed Mar 28 16:42:05 2012 +0800
+    message: test 27
+  - commit_id: aecd916e27e490ed7d8a9a535adabb2849d9417b
+    author: James Wang <jameswangz81@gmail.com>
+    date: Wed Mar 28 16:41:59 2012 +0800
+    message: test 26
+- build_id: 7c95a6cbf32224dbc9033677b17468daaa2a5c6a
+  changes_since_last_build: 
+  - commit_id: 7c95a6cbf32224dbc9033677b17468daaa2a5c6a
+    author: James Wang <jameswangz81@gmail.com>
+    date: Wed Mar 28 16:20:40 2012 +0800
+    message: test 26
+  - commit_id: 034301d160f29e7b95194472df5c1b8f1a709d39
+    author: James Wang <jameswangz81@gmail.com>
+    date: Wed Mar 28 16:20:35 2012 +0800
+    message: test 25
+  - commit_id: 8adef95c47093c34c4bacbebaddca9763cec7673
+    author: James Wang <jameswangz81@gmail.com>
+    date: Wed Mar 28 16:18:33 2012 +0800
+    message: test 24
+  - commit_id: c8cfd443dc8fdb5298f6fb2f05e62dba661fbb91
+    author: James Wang <jameswangz81@gmail.com>
+    date: Wed Mar 28 16:18:26 2012 +0800
+    message: test 23

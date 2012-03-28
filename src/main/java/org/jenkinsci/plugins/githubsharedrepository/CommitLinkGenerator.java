@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.githubsharedrepository;
 
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.BuildListener;
@@ -33,8 +34,10 @@ public class CommitLinkGenerator extends Builder {
 		GithubSharedProjectProperty jobProperty = build.getParent().getProperty(GithubSharedProjectProperty.class);
 		if (jobProperty != null) {
 			try {
-				String commitId = build.getEnvironment(listener).get(commitIdParamName);
+				EnvVars environment = build.getEnvironment(listener);
+				String commitId = environment.get(commitIdParamName);
 				build.addAction(new CommitLinkAction(jobProperty.getProjectUrl(), commitId));						
+				build.addAction(new ChangesSinceLastBuildAction(environment.get("JOB_NAME"), jobProperty.getProjectUrl(), commitId));						
 			} catch (Exception e) {
 				throw Throwables.propagate(e);
 			}
