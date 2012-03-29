@@ -85,7 +85,7 @@ Some of them are obviously,  I'll explain them one by one
 * other_options[:COMMIT_ID_PARAM_NAME] : here your can specify the git commit id parameter name, this parameter is very important, it will be 
   used in the Jenkins job configuration as we will explain later.   
 * other_options[:MAX_TRACKED_BUILDS] : the maximum number of tracked builds, 10 is a resonable number, for more information please
-  refer to [here](#About Changes Since Last Build)  
+  refer to [here] [changes_since_last_build]  
 
 At this point you have configured the trigger script successfully, save it and get ready to configure the plugin in Jenkins.
 
@@ -100,8 +100,8 @@ the downstream jobs of 'api', we need to configure the following options for the
   the value of the :COMMIT_ID_PARAM_NAME we configured in the trigger script, optionally you can specify a default value
   for this parameter like 'Manually', this parameter will be exported to environment variable by Jenkins thus you can 
   use it in the build process for some versioning purpose.  
-* Generate Github Commit Link And Changes Since Last Build : add a build step and choose 'Generate Github Commit Link And Changes Since Last Build',  
-  set the Git Commit Id Parameter Name to the same value of the :COMMIT_ID_PARAM_NAME. 
+* Generate Github Commit Link And Changes Since Last Build : add a build step and choose 'Generate Github Commit Link 
+  And Changes Since Last Build', set the Git Commit Id Parameter Name to the same value of the :COMMIT_ID_PARAM_NAME. 
 * Trigger Parameterized : check 'Trigger parameterized build on other projects', fill in 'impl,web' for 'Projects to build',
   click 'Add Parameters' and choose 'Current build parameters'.
 
@@ -140,7 +140,7 @@ There are 2 ways to schedule the trigger script
   the commit hyperlinks should be generated in the build summary page of all jobs.
 * The Changes Since Last Build should work properly.
 
-# About Changes Since Last Build
+# [changes_since_last_build]: More About Changes Since Last Build
 
 
 # Known Issues 
