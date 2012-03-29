@@ -1,5 +1,5 @@
 <div>
 	This Plugin allows you to create multiple jobs for a multi-modules project, it will only trigger the affected jobs accordingly, 
-	It also generates the commit hyper-link between Jenkins and github like the original github Plugin, for more information, please
+	it also generates the commit hyper-link between Jenkins and github like the original github Plugin, for more information, please
 	refer to the <a href="https://github.com/jameswangz/github-shared-repository/blob/master/README.markdown">documentation</a>.
 </div>
