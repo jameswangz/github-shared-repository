@@ -33,7 +33,7 @@ public class ChangesSinceLastBuildAction implements Action, Constants {
 	public ChangesSinceLastBuild getChangesSinceLastBuild() {		
 		try {
 			URL url = new File(String.format("%s/%s/%s.yml", System.getProperty("user.home"), WORKING_DIR, job)).toURI().toURL();
-			return new ChangesSinceLastBuild(url.openStream(), githubUrl, buildId);
+			return new ChangesSinceLastBuild(url, githubUrl, buildId);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

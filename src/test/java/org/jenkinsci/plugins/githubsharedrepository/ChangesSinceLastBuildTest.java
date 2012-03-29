@@ -1,6 +1,6 @@
 package org.jenkinsci.plugins.githubsharedrepository;
 
-import java.io.InputStream;
+import java.net.URL;
 import java.util.Iterator;
 
 import org.junit.Assert;
@@ -12,23 +12,24 @@ public class ChangesSinceLastBuildTest extends Assert {
 	private String projectUrl = "https://github.com/jameswangz/github-shared-repository";
 
 	@Test
-	public void nullInput() {
-		ChangesSinceLastBuild build = new ChangesSinceLastBuild(null, null, null);
+	public void workingFileNotFound() {
+		URL url = Thread.currentThread().getContextClassLoader().getResource("none-exists.yml");
+		ChangesSinceLastBuild build = new ChangesSinceLastBuild(url, null, null);
 		assertTrue(build.workingFileNotFound());
 	}
 
 	@Test
 	public void buildNotFound() {
-		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("api.yml");
-		ChangesSinceLastBuild build = new ChangesSinceLastBuild(inputStream, null, "INVALID_BUILD_ID");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("api.yml");
+		ChangesSinceLastBuild build = new ChangesSinceLastBuild(url, null, "INVALID_BUILD_ID");
 		assertTrue(build.buildNotFound());
 	}
 	
 	@Test
 	public void success() {
-		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("api.yml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("api.yml");
 		GithubUrl githubUrl = new GithubUrl(projectUrl);
-		ChangesSinceLastBuild build = new ChangesSinceLastBuild(inputStream, githubUrl, "548f465f1c4748741736a05caa5f7cb818d2e4b0");
+		ChangesSinceLastBuild build = new ChangesSinceLastBuild(url, githubUrl, "548f465f1c4748741736a05caa5f7cb818d2e4b0");
 		assertTrue(build.hasContent());
 		assertEquals(2, build.getChanges().size());
 		Iterator<Change> iterator = build.getChanges().iterator();

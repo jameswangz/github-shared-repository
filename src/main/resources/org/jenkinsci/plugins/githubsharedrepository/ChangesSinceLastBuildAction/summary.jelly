@@ -1,17 +1,31 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
   <t:summary icon="${it.iconFileName}">
-  	<div>Changes Since Last Build</div>
-  	<ul>
-    	<j:forEach var="change" items="${it.changesSinceLastBuild.changes}">
-      		<li>
-	      		<a href="${change.commitLink}">commit : ${change.commitId}</a><br />
-	      		Author : ${change.author}<br />
-	      		Date : ${change.date}<br />
-	      		Message : ${change.message}
-      		</li>
-      		<br />
-    	</j:forEach>
-  	</ul>
+  	<div>Changes Since Last Build</div><br />
+	<j:set var="changes" value="${it.changesSinceLastBuild}" />
+	<j:if test="${changes.workingFileNotFound()}">
+		<font color="red">Working file not found, please make sure you have configured the trigger script correctly.</font>
+	</j:if>
+	<j:if test="${changes.buildNotFound()}">
+		Build [${changes.buildId}] not found in ${changes.url.path}, possible reasons
+		<ul>
+	 		<li>This build is likely triggered by the upstream job or manually.</li>
+	 		<li>The tracked builds have been rolled up in ${changes.url.path}, consider set a larger value of <b><i>other_options[:MAX_TRACKED_BUILDS]</i></b> in the trigger script.</li>
+	 	</ul>
+	</j:if>
+  	<table class="pane" style="border:none">
+  		<tbody>
+  		   	<j:forEach var="change" items="${changes.changes}">
+	  			<tr class="pane">
+	  				<td class="changeset" colspan="2">
+		  				<div class="changeset-message">
+		  					<a href="${change.commitLink}">Commit ${change.commitId}</a> by <b>${change.author}</b> @ <b>${change.date}</b> <br /><br />
+			              	<pre>${change.message}</pre>
+		              </div>
+	  				</td>
+	  			</tr>
+	  		</j:forEach>	
+  		</tbody>
+  	</table>
   </t:summary>
 </j:jelly>
