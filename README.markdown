@@ -143,7 +143,7 @@ There are 2 ways to schedule the trigger script
 # More About Changes Since Last Build
 The trigger script will create a yml file for each job, it located in ${user_home}/.github_shared_repository/${job_name}.yml,
 this file will track the recent builds history, the maximum trakced number is specified in other_options[:MAX_TRACKED_BUILDS], 
-you can read the content this file for some artifacting purpose(don't make any change on it).
+you can read the content this file for some artifact purpose(don't make any change on it).
 
 The reason we must keep multiple builds history rather than just track the latest one is there will be a delay between
 the trigger action and the building process, in the building process another trigger action may occur, if we just track the 
