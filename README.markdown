@@ -18,10 +18,11 @@ find a way to configure separate Jenkins jobs for different modules and trigger 
 and this is what's this plugin done.   
 
 # Features 
-This plugin has two features
+This plugin has 3 features
 
 * The trigger scripts(written with Ruby) will trigger the affected jobs remotely (by using the 'git log --quiet HEAD^..HEAD module' command) 
-* The plugin itself will generate the project and commit hyperlinks to Github(almost same with the original Github plugin)
+* The plugin will generate the project and commit hyperlinks to Github(almost same with the original Github plugin)
+* The plugin will generate the list of changes since last build 
 
 The trigger scripts could also be part of the plugin but currently it works well, if I'm
 in scheduler I may move the feature to the plugin to decrease the installation complexity. 
@@ -66,7 +67,7 @@ Let's look at the sample jenkins_trigger.rb
 		module_job_mappings = { 'api' => 'api', 'impl/src' => 'impl-src' }
 		running_options = { :only_once => false, :interval => 5 }
 		auth_options = { :required => true, :username => 'james', :api_token => 'dcebe4f09bdc324d2d9567780f04a0c1' }
-		other_options = { :COMMIT_ID_PARAM_NAME => 'BUILD_ID' }
+		other_options = { :COMMIT_ID_PARAM_NAME => 'BUILD_ID', :MAX_TRACKED_BUILDS => 10 }
 		GitJenkinsRemoteTrigger.new(jenkins, module_job_mappings, running_options, auth_options, other_options).run
 	end
 
@@ -81,8 +82,10 @@ Some of them are obviously,  I'll explain them one by one
   you specify the :only_once to false and specify a reasonable value for the :interval value, here I specify it as 5 seconds.
 * auth_options : if your Jenkins server doesn't need authentication just specify the :required value to false, on the contrary,
   specify the :required value to true and provide the :username and :api_token values(the api token can be got from user profile page).
-* other_options : here your can specify the git commit id parameter name, this parameter is very important, it will be 
+* other_options[:COMMIT_ID_PARAM_NAME] : here your can specify the git commit id parameter name, this parameter is very important, it will be 
   used in the Jenkins job configuration as we will explain later.   
+* other_options[:MAX_TRACKED_BUILDS] : the maximum number of tracked builds, 10 is a resonable number, for more information please
+  refer to [here](#About Changes Since Last Build)  
 
 At this point you have configured the trigger script successfully, save it and get ready to configure the plugin in Jenkins.
 
@@ -97,8 +100,8 @@ the downstream jobs of 'api', we need to configure the following options for the
   the value of the :COMMIT_ID_PARAM_NAME we configured in the trigger script, optionally you can specify a default value
   for this parameter like 'Manually', this parameter will be exported to environment variable by Jenkins thus you can 
   use it in the build process for some versioning purpose.  
-* Generate Github Commit Link : in the Post-build Actions, check 'Generate Github Commit Link', set the Git Commit Id 
-  Parameter Name to the same value of the :COMMIT_ID_PARAM_NAME. 
+* Generate Github Commit Link And Changes Since Last Build : add a build step and choose 'Generate Github Commit Link And Changes Since Last Build',  
+  set the Git Commit Id Parameter Name to the same value of the :COMMIT_ID_PARAM_NAME. 
 * Trigger Parameterized : check 'Trigger parameterized build on other projects', fill in 'impl,web' for 'Projects to build',
   click 'Add Parameters' and choose 'Current build parameters'.
 
@@ -135,6 +138,10 @@ There are 2 ways to schedule the trigger script
   the commit hyperlink should be generated in the build summary page.
 * Make a change in the 'api'module, push the changes to github, both the 'api' and downstream jobs should be triggered,
   the commit hyperlinks should be generated in the build summary page of all jobs.
+* The Changes Since Last Build should work properly.
+
+# About Changes Since Last Build
+
 
 # Known Issues 
 Currently the trigger script hardcoded the git repository branch to 'master', it may be specified as expected.
