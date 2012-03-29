@@ -85,7 +85,7 @@ Some of them are obviously,  I'll explain them one by one
 * other_options[:COMMIT_ID_PARAM_NAME] : here your can specify the git commit id parameter name, this parameter is very important, it will be 
   used in the Jenkins job configuration as we will explain later.   
 * other_options[:MAX_TRACKED_BUILDS] : the maximum number of tracked builds, 10 is a resonable number, for more information please
-  refer to [here][changes_since_last_build]  
+  refer to the More About Changes Since Last Build part.  
 
 At this point you have configured the trigger script successfully, save it and get ready to configure the plugin in Jenkins.
 
@@ -140,9 +140,17 @@ There are 2 ways to schedule the trigger script
   the commit hyperlinks should be generated in the build summary page of all jobs.
 * The Changes Since Last Build should work properly.
 
-[changes_since_last_build]: More About Changes Since Last Build
+# More About Changes Since Last Build
+The trigger script will create a yml file for each job, it located in ${user_home}/.github_shared_repository/${job_name}.yml,
+this file will track recent builds history, the maximum trakced number is specified in other_options[:MAX_TRACKED_BUILDS], 
+you can read this file for some artifact purpose, but don't make any change on it.
 
-
+The reason we must keep multiple builds history rather than just track the latest one is there will be a delay between
+the trigger action and building process, in the building process another trigger action may occur, if we just track the 
+latest build the plugin we may get the wrong build id, actually the plugin will look for the corresponding build in the yml
+according to the build id to get the changes since last build, the old build history will be rolled up, if you want to keep 
+the history longer, consider adjust the other_options[:MAX_TRACKED_BUILDS] to a larger value.
+   
 # Known Issues 
 Currently the trigger script hardcoded the git repository branch to 'master', it may be specified as expected.
 
