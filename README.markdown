@@ -149,8 +149,8 @@ The reason we must keep multiple builds history rather than just track the lates
 the trigger action and the building process, in the building process another trigger action may occur, if we just track the 
 latest build the plugin we may get the wrong build id(because the last build has been overwritten), actually the plugin will 
 look for the corresponding build in the yml according to the build id to get the changes since last build, the old build history 
-will be rolled up if it exceeds other_options[:MAX_TRACKED_BUILDS] , if you want to keep the history longer, consider adjust 
-this option to a larger value in the trigger script.
+will be rolled up if it exceeds the value of other_options[:MAX_TRACKED_BUILDS] , if you want to keep the history longer, 
+consider adjust this option to a larger value in the trigger script.
    
 # Known Issues 
 Currently the trigger script hardcoded the git repository branch to 'master', it may be specified as expected.
