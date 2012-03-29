@@ -9,7 +9,7 @@
 			<j:if test="${changes.buildNotFound()}">
 				Build [${changes.buildId}] not found in ${changes.url.path}, possible reasons
 				<ul>
-			 		<li>This build is likely triggered by the upstream job or manually.</li>
+			 		<li>This build is triggered by the upstream job or manually.</li>
 			 		<li>The tracked builds have been rolled up in ${changes.url.path}, consider set a larger value of <b><i>other_options[:MAX_TRACKED_BUILDS]</i></b> in the trigger script.</li>
 			 	</ul>
 			</j:if>
