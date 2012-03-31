@@ -41,7 +41,7 @@ To install the trigger script you just copy [the 2 ruby files](https://github.co
 to your project root folder, we need to do some configurations later but just leave them their at the moment.
 
 ## Install the Plugin
-[Download the latest version hpi (currently 1.0)](https://github.com/jameswangz/github-shared-repository/tree/master/downloads)
+[Download the latest version hpi (currently 1.0.1)](https://github.com/jameswangz/github-shared-repository/tree/master/downloads)
 and install it on Jenkins UI(Manage Jenkins -> Manage Plugins -> Advanced -> Upload Plugin, I may put the artifacts 
 in Jenkins Plugin Repository but currently please install it manully), restart Jenkins to enable the plugin.
 
