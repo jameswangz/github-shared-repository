@@ -1,5 +1,7 @@
 package org.jenkinsci.plugins.githubsharedrepository;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -12,8 +14,15 @@ public class ChangesSinceLastBuildTest extends Assert {
 	private String projectUrl = "https://github.com/jameswangz/github-shared-repository";
 
 	@Test
-	public void workingFileNotFound() {
+	public void workingFileNotFoundFromClassPath() {
 		URL url = Thread.currentThread().getContextClassLoader().getResource("none-exists.yml");
+		ChangesSinceLastBuild build = new ChangesSinceLastBuild(url, null, null);
+		assertTrue(build.workingFileNotFound());
+	}
+	
+	@Test
+	public void workingFileNotFoundFromFile() throws MalformedURLException {
+		URL url = new File("/none-exists.yml").toURI().toURL();
 		ChangesSinceLastBuild build = new ChangesSinceLastBuild(url, null, null);
 		assertTrue(build.workingFileNotFound());
 	}

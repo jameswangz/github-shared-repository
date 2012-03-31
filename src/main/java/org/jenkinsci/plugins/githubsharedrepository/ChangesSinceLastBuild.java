@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.githubsharedrepository;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -34,12 +35,13 @@ public class ChangesSinceLastBuild {
 
 	@SuppressWarnings("unchecked")
 	private void process() {
+		InputStream inputStream = null;
 		try {
 			if (url == null) {
 				workingFileNotFound = true;
 				return;
 			}
-			InputStream inputStream = url.openStream();
+			inputStream = url.openStream();
 			if (inputStream == null) {
 				workingFileNotFound = true;
 				return;
@@ -64,8 +66,19 @@ public class ChangesSinceLastBuild {
 				return;
 			}			
 			inputStream.close();
+		} catch (FileNotFoundException e) {
+			this.workingFileNotFound = true;
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 

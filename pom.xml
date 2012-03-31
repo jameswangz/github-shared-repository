@@ -9,7 +9,7 @@
 	<groupId>org.jenkins-ci.plugins.github-shared-repository</groupId>
 	<artifactId>github-shared-repository</artifactId>
 	<name>Github Shared Repository Plugin</name>
-	<version>1.0</version>
+	<version>1.01</version>
 	<packaging>hpi</packaging>
 	<!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
 	<repositories>
