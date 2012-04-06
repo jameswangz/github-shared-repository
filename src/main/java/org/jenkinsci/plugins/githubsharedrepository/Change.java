@@ -1,40 +1,43 @@
 package org.jenkinsci.plugins.githubsharedrepository;
 
+import java.util.Map;
+
 public class Change {
 
 	private final GithubUrl githubUrl;
-	private final String commitId;
-	private final String author;
-	private final String date;
-	private final String message;
+	private final Map<String, String> map;
 
-	public Change(GithubUrl githubUrl, String commitId, String author, String date, String message) {
+	public Change(GithubUrl githubUrl, Map<String, String> map) {
 		this.githubUrl = githubUrl;
-		this.commitId = commitId;
-		this.author = author;
-		this.date = date;
-		this.message = message;
+		this.map = map;
 	}
 
 	public String getCommitId() {
-		return commitId;
+		return map.get("commit_id");
 	}
 
 	public String getCommitLink() {
-		return githubUrl.commitId(commitId);
+		return githubUrl.commitId(getCommitId());
 	}
 
 	public String getAuthor() {
-		return author;
+		return map.get("author");
 	}
 
 	public String getDate() {
-		return date;
+		return map.get("date");
 	}
 
 	public String getMessage() {
-		return message;
+		return map.get("message");
 	}
+
+	public Map<String, String> innerMap() {
+		return map;
+	}
+
+
+
 	
 	
 }

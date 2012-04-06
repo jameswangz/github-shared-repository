@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
+import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.base.Function;
@@ -49,6 +53,9 @@ public class ChangesSinceLastBuild {
 			Yaml yaml = new Yaml();
 			Map<String, List<Map<String, Object>>> loaded = (Map<String, List<Map<String, Object>>>) yaml.load(inputStream);
 			List<Map<String, Object>> recentChanges = loaded.get("recent_builds");
+			if (recentChanges == null) {
+				recentChanges = new ArrayList<Map<String,Object>>();
+			}
 			try {
 				Map<String, Object> found = Iterables.find(recentChanges, new Predicate<Map<String, Object>>() {
 					public boolean apply(Map<String, Object> input) {
@@ -58,7 +65,7 @@ public class ChangesSinceLastBuild {
 				List<Map<String, String>> changeList = (List<Map<String, String>>) found.get("changes_since_last_build");
 				changes = Lists.transform(changeList, new Function<Map<String, String>, Change>() {
 					public Change apply(Map<String, String> input) {
-						return new Change(githubUrl, input.get("commit_id"), input.get("author"), input.get("date"), input.get("message"));
+						return new Change(githubUrl, input);
 					}
 				});
 			} catch (NoSuchElementException e) {
@@ -104,6 +111,21 @@ public class ChangesSinceLastBuild {
 
 	public String getBuildId() {
 		return buildId;
+	}
+
+	public String asText() {
+		if (changes.isEmpty()) {
+			return "";
+		}
+		List<Map<String, String>> maps = Lists.transform(changes, new Function<Change, Map<String, String>>() {
+			public Map<String, String> apply(Change input) {
+				return input.innerMap();
+			}
+		});
+		DumperOptions options = new DumperOptions();
+		options.setDefaultFlowStyle(FlowStyle.BLOCK);
+		options.setDefaultScalarStyle(ScalarStyle.PLAIN);
+		return new Yaml(options).dumpAll(maps.iterator());
 	}
 
 

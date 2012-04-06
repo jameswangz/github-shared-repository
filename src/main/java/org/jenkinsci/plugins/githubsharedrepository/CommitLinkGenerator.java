@@ -39,6 +39,7 @@ public class CommitLinkGenerator extends Builder {
 				GithubUrl projectUrl = jobProperty.getProjectUrl();
 				build.addAction(new CommitLinkAction(projectUrl, commitId));						
 				build.addAction(new ChangesSinceLastBuildAction(environment.get("JOB_NAME"), projectUrl, commitId));						
+				build.addAction(new ChangesSinceLastBuildRawDataAction(environment.get("JOB_NAME"), projectUrl, commitId));						
 			} catch (Exception e) {
 				throw Throwables.propagate(e);
 			}
