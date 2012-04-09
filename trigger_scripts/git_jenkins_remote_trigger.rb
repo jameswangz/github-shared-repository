@@ -73,16 +73,16 @@ class GitJenkinsRemoteTrigger
 		end
 		@module_job_mappings.each do |module_name, job_name|
 			working_file = initialize_working_file(job_name)
-			result = %x[git log --quiet HEAD~..HEAD #{module_name}]
-			puts "Result of #{module_name} [#{result}]"
-			if not result.empty?
-				result =~ /commit\s+(.+)/
-				commit_id = $1
-				record_recent_builds(module_name, working_file, commit_id)
-				trigger job_name, commit_id
+			build_data = YAML.load_file(working_file)
+			changes_since_last_build = get_changes_since_last_build(build_data, module_name)
+			if not changes_since_last_build.empty?
+				commit_id = last_commit_id_of(changes_since_last_build) 
+				unshift_this_build(build_data, working_file, changes_since_last_build)
+				trigger(job_name, commit_id)
 			end
 		end
 	end
+
 
 	def initialize_working_file(job_name)
 		working_file = File.expand_path("#{job_name}.yml", @working_dir)
@@ -98,19 +98,26 @@ class GitJenkinsRemoteTrigger
 		working_file
 	end
 
-	def record_recent_builds(module_name, working_file, commit_id)
-		build_data = YAML.load_file(working_file)
+	def get_changes_since_last_build(build_data, module_name)
 		last_build_id = build_data['recent_builds'][0]['build_id']
 		if last_build_id == 'NONE'
 			command = "git log --quiet #{module_name}"
 		else
 			command = "git log --quiet #{last_build_id}..HEAD #{module_name}"
 		end
+		puts command
 		logs_raw_data = %x[#{command}]
 		changes_since_last_build = analyze_multiple_commit_logs(logs_raw_data)
-		puts "changes_since_last_build #{changes_since_last_build}"
-		return if changes_since_last_build.empty?
-		build_data['recent_builds'].unshift({ 'build_id' => commit_id, 'changes_since_last_build' => changes_since_last_build })
+		puts "changes since last build of #{module_name} #{changes_since_last_build}"
+		changes_since_last_build
+	end
+
+	def last_commit_id_of(changes_since_last_build)
+		commit_id = changes_since_last_build.first['commit_id'] 
+	end
+
+	def unshift_this_build(build_data, working_file, changes_since_last_build)
+		build_data['recent_builds'].unshift({ 'build_id' => last_commit_id_of(changes_since_last_build), 'changes_since_last_build' => changes_since_last_build })
 		if (build_data['recent_builds'].length > @other_options[:MAX_TRACKED_BUILDS]) 
 			build_data['recent_builds'] = build_data['recent_builds'].take(@other_options[:MAX_TRACKED_BUILDS])
 		end	
