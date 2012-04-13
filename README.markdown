@@ -38,10 +38,10 @@ if you are deploying your Jenkins server on windows or some Linux releases not i
 from [the Ruby website](http://www.ruby-lang.org/en/downloads/).
 
 To install the trigger script you just copy [the 2 ruby files](https://github.com/jameswangz/github-shared-repository/tree/master/trigger_scripts) 
-to your project root folder, we need to do some configurations later but just leave them their at the moment.
+to your project root folder, we need to do some configurations later but just leave them there at the moment.
 
 ## Install the Plugin
-[Download the latest version hpi (currently 1.0.1)](https://github.com/jameswangz/github-shared-repository/tree/master/downloads)
+[Download the latest version hpi (currently 1.0.2-SNAPSHOT)](https://github.com/jameswangz/github-shared-repository/tree/master/downloads)
 and install it on Jenkins UI(Manage Jenkins -> Manage Plugins -> Advanced -> Upload Plugin, I may put the artifacts 
 in Jenkins Plugin Repository but currently please install it manully), restart Jenkins to enable the plugin.
 
