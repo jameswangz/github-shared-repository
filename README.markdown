@@ -145,6 +145,9 @@ The trigger script will create a yml file for each job, it located in ${user_hom
 this file will track the recent builds history, the maximum trakced number is specified in other_options[:MAX_TRACKED_BUILDS], 
 you can read the content this file for some artifact purpose(don't make any change on it).
 
+Since the Plugin will read the yml files in the user home, to enable the Changes Since Last Build feature you must run
+the trigger script on the same machine with the Jenkins server(and also run with the same user).
+
 The reason we must keep multiple builds history rather than just track the latest one is there will be a delay between
 the trigger action and the building process, in the building process another trigger action may occur, if we just track the 
 latest build the plugin we may get the wrong build id(because the last build has been overwritten), actually the plugin will 
