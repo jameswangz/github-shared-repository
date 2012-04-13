@@ -156,4 +156,4 @@ consider adjust this option to a larger value in the trigger script.
 Currently the trigger script hardcoded the git repository branch to 'master', it may be specified as expected.
 
 # Contact
-If you have any questions, please contact me at [james.wang.z81@gmail.com]. 
+If you have any questions, please contact me at <james.wang.z81@gmail.com>. 
