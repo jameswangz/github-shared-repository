@@ -140,7 +140,7 @@ There are 2 ways to schedule the trigger script
   the commit hyperlinks should be generated in the build summary page of all jobs.
 * The Changes Since Last Build should work properly.
 
-# <a id="changes_since_last_build">More About Changes Since Last Build</a>
+# <a id="changes_since_last_build"></a>More About Changes Since Last Build
 The trigger script will create a yml file for each job, it located in ${user_home}/.github_shared_repository/${job_name}.yml,
 this file will track the recent builds history, the maximum trakced number is specified in other_options[:MAX_TRACKED_BUILDS], 
 you can read the content this file for some artifact purpose(don't make any change on it).
