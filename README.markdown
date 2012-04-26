@@ -48,7 +48,7 @@ in Jenkins Plugin Repository but currently please install it manully), restart J
 ## Install the Parameterized Trigger Plugin
 Since we are using the remote api to trigger the Jenkins jobs, we will pass the git commit id by using the Jenkins 
 job parameters to generate the commit hyperlink, however, the parameters can't be propogated to the downstream jobs 
-by default, so we need install the [Parameterized Trigger Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Trigger+Plugin) 
+by default, so we need to install the [Parameterized Trigger Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Trigger+Plugin) 
 to achieve it, to install this Plugin you use the online Plugin installation feature. 
 
 # Configuration
