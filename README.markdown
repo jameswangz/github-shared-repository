@@ -20,7 +20,7 @@ and this is what's this plugin done.
 # Features 
 This plugin has 3 features
 
-* The trigger scripts(written with Ruby) will trigger the affected jobs remotely (by using the 'git log --quiet HEAD^..HEAD module' command) 
+* The trigger scripts(written with Ruby) will trigger the affected jobs remotely (by using the 'git log since..until path' command) 
 * The plugin will generate the project and commit hyperlinks to Github(almost same with the original Github plugin)
 * The plugin will generate the list of changes since last build 
 
