@@ -67,7 +67,7 @@ Let's look at the sample jenkins_trigger.rb
 		module_job_mappings = { 'api' => 'api', 'impl/src' => 'impl-src' }
 		running_options = { :only_once => false, :interval => 5 }
 		auth_options = { :required => true, :username => 'james', :api_token => 'dcebe4f09bdc324d2d9567780f04a0c1' }
-		other_options = { :COMMIT_ID_PARAM_NAME => 'BUILD_ID', :MAX_TRACKED_BUILDS => 10 }
+		other_options = { :branch => 'master', :commit_id_param_name => 'BUILD_ID', :max_tracked_builds => 10 }
 		GitJenkinsRemoteTrigger.new(jenkins, module_job_mappings, running_options, auth_options, other_options).run
 	end
 
@@ -82,9 +82,10 @@ Some of them are obviously,  I'll explain them one by one
   you specify the :only_once to false and specify a reasonable value for the :interval value, here I specify it as 5 seconds.
 * auth_options : if your Jenkins server doesn't need authentication just specify the :required value to false, on the contrary,
   specify the :required value to true and provide the :username and :api_token values(the api token can be got from user profile page).
-* other_options[:COMMIT_ID_PARAM_NAME] : here your can specify the git commit id parameter name, this parameter is very important, it will be 
+* other_options[:branch] : which branch to be based on
+* other_options[:commit_id_param_name] : here your can specify the git commit id parameter name, this parameter is very important, it will be 
   used in the Jenkins job configuration as we will explain later.   
-* other_options[:MAX_TRACKED_BUILDS] : the maximum number of tracked builds, 10 is a resonable number, for more information please
+* other_options[:max_tracked_builds] : the maximum number of tracked builds, 10 is a resonable number, for more information please
   refer to [the More About Changes Since Last Build part](#changes_since_last_build).  
 
 At this point you have configured the trigger script successfully, save it and get ready to configure the plugin in Jenkins.
@@ -97,11 +98,11 @@ the downstream jobs of 'api', we need to configure the following options for the
 * Github Project (Shared Repository) : the URL for the GitHub hosted project, please note you are not configuring the 
   Github Project property if you have the original Github Plugin installed.
 * Job Parameters : check 'This build is parameterized' and add a String Parameter, the parameter name must be same with
-  the value of the :COMMIT_ID_PARAM_NAME we configured in the trigger script, optionally you can specify a default value
+  the value of the :commit_id_param_name we configured in the trigger script, optionally you can specify a default value
   for this parameter like 'Manually', this parameter will be exported to environment variable by Jenkins thus you can 
   use it in the build process for some versioning purpose.  
 * Generate Github Commit Link And Changes Since Last Build : add a build step and choose 'Generate Github Commit Link 
-  And Changes Since Last Build', set the Git Commit Id Parameter Name to the same value of the :COMMIT_ID_PARAM_NAME. 
+  And Changes Since Last Build', set the Git Commit Id Parameter Name to the same value of the :commit_id_param_name. 
 * Trigger Parameterized : check 'Trigger parameterized build on other projects', fill in 'impl,web' for 'Projects to build',
   click 'Add Parameters' and choose 'Current build parameters'.
 
@@ -122,6 +123,11 @@ Now we have the git repository in place, we have 2 ways to make it as a shared r
 * Configure the workspaceDir in JENKINS_HOME/config.xml, set the value to the git repository folder, this solution
   only works for the situation that the Jenkins server is dedicated for only 1 project. 
 * Create soft links for all jobs, source ->  git repository folder, target -> job/workspace 
+
+## Switch to the desired branch
+By default git will use master branch, if you specified other branch in jenkins_trigger.rb you need to switch to it by using the following command
+
+`git checkout -b branch_name origin/branch_name`
  
 ## Schedule the trigger script
 There are 2 ways to schedule the trigger script
@@ -155,8 +161,5 @@ look for the corresponding build in the yml according to the build id to get the
 will be rolled up if it exceeds the value of other_options[:MAX_TRACKED_BUILDS] , if you want to keep the history longer, 
 consider adjust this option to a larger value in the trigger script.
    
-# Known Issues 
-Currently the trigger script hardcoded the git repository branch to 'master', it may be specified as expected.
-
 # Contact
 If you have any questions, please contact me at <james.wang.z81@gmail.com>. 
