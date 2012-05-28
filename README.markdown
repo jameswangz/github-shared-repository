@@ -35,7 +35,7 @@ explain how to create a shared git repository in the Configuration part.
 ## Install the trigger scripts
 The trigger scripts are written with ruby, most of the Linux releases have provided the builtin ruby environment, 
 if you are deploying your Jenkins server on windows or some Linux releases not included ruby please install them 
-from [the Ruby website](http://www.ruby-lang.org/en/downloads/).
+from [the Ruby website](http://www.ruby-lang.org/en/downloads/), ruby 1.9.3p125 is recommended because it runs stable in my test environment. 
 
 To install the trigger script you just copy [the 2 ruby files](https://github.com/jameswangz/github-shared-repository/tree/master/trigger_scripts) 
 to your project root folder, we need to do some configurations later but just leave them there at the moment.
