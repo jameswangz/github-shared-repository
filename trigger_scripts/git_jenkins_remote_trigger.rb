@@ -34,13 +34,14 @@ class GitJenkinsRemoteTrigger
 		module_job_mappings, 
 		running_options = { :only_once => true }, 
 		auth_options = { :required => false },
-		other_options = { :COMMIT_ID_PARAM_NAME => 'GIT_COMMIT_ID'	}
+		other_options = { :branch => 'master', :commit_id_param_name => 'GIT_COMMIT_ID', :max_tracked_builds => 10	}
 	)	
 		@jenkins = jenkins
 		@module_job_mappings = module_job_mappings
 		@running_options = running_options
 		@auth_options = auth_options		
 		@other_options = other_options
+		@branch = @other_options[:branch]
 		@working_dir = File.expand_path('.github_shared_repository', '~')
 		create_working_dir_if_required
 	end
@@ -64,7 +65,10 @@ class GitJenkinsRemoteTrigger
 	end
 
 	def run_once
-		pull_result = %x[git pull origin master]
+		create_or_switch_branch
+		pull_cmd = "git pull origin #{@branch}"
+		puts pull_cmd
+		pull_result = %x[#{pull_cmd}]
 		puts pull_result
 		return if pull_result.include? 'Already up-to-date'
 		if pull_result.empty?
@@ -83,6 +87,26 @@ class GitJenkinsRemoteTrigger
 		end
 	end
 
+	def create_or_switch_branch
+		branches_output = %x[git branch]
+		branches = {}
+		branches_output.lines.each do |e| 
+			e.strip =~ /(\*\s*)?(.+)/
+			branches[$2] = !$1.nil?
+		end
+		if branches.has_key? @branch
+			current = branches[@branch]
+			cmd = "git checkout #{@branch}" unless current
+		else
+			# The branch doesn't exist, we need to update the remote branch info and create it
+			%x[git pull origin]
+			cmd = "git checkout -b #{@branch} origin/#{@branch}"
+		end	
+		if cmd
+			puts cmd
+			%x[#{cmd}]
+		end
+	end
 
 	def initialize_working_file(job_name)
 		working_file = File.expand_path("#{job_name}.yml", @working_dir)
@@ -118,15 +142,15 @@ class GitJenkinsRemoteTrigger
 
 	def unshift_this_build(build_data, working_file, changes_since_last_build)
 		build_data['recent_builds'].unshift({ 'build_id' => last_commit_id_of(changes_since_last_build), 'changes_since_last_build' => changes_since_last_build })
-		if (build_data['recent_builds'].length > @other_options[:MAX_TRACKED_BUILDS]) 
-			build_data['recent_builds'] = build_data['recent_builds'].take(@other_options[:MAX_TRACKED_BUILDS])
+		if (build_data['recent_builds'].length > @other_options[:max_tracked_builds]) 
+			build_data['recent_builds'] = build_data['recent_builds'].take(@other_options[:max_tracked_builds])
 		end	
 		File.open(working_file, 'w') { |f| f.write(build_data.to_yaml) }
 	end	
 
 	def trigger(job_name, commit_id)
 		puts "triggering job #{job_name}"
-		uri = URI("#{@jenkins}/job/#{job_name}/buildWithParameters?#{@other_options[:COMMIT_ID_PARAM_NAME]}=#{commit_id}")			
+		uri = URI("#{@jenkins}/job/#{job_name}/buildWithParameters?#{@other_options[:commit_id_param_name]}=#{commit_id}")			
 		puts uri
 		begin
 			if @auth_options[:required] 
