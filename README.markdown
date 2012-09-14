@@ -1,6 +1,6 @@
 # Goals
 [Jenkins Github Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Github+Plugin) already has nice features to 
-let Jenkins works well with Github, so why do we need this [Github shared repository plugin](https://github.com/jameswangz/github-shared-repository)? 
+let Jenkins works well with Github, so why do we still need this [Github shared repository plugin](https://github.com/jameswangz/github-shared-repository)? 
 Well, this is because we have some special scenarios that github plugin couldn't handle, actually I've asked this
 question on [Stack Overflow](http://stackoverflow.com/questions/9374028/how-to-trigger-a-individual-job-in-jenkins-with-github-repository). 
 
@@ -9,7 +9,7 @@ looks like a 'blob' object, that means it doesn't like subversion(or some other 
 that we can check out or update just partial files from the repository, this is also the reason why
 git is so fast, it's nice but the multi-modules structure is very common in many projects, 
 in this case we usually create separate Jenkins jobs for different modules, and we expect the code changes 
-in some modules will only trigger corresponding jobs rather than trigger all of them(as the project size grows,
+in some modules will only trigger the corresponding jobs rather than trigger all of them(as the project size grows,
 the building process is slower and slower), we have also considered using [Git submodules](http://help.github.com/submodules/) 
 or [Git subtrees](https://github.com/apenwarr/git-subtree) to achieve this goal, but we feel they are too
 complicated for the beginners and will introduce additional complexities especially git itself has a 
