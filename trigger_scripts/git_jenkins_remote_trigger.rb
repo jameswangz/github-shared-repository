@@ -20,7 +20,7 @@ require 'yaml'
 
 module LogAnalyzer
 	def analyze_multiple_commit_logs(raw_data)
-		array = raw_data.scan(/commit\s+(.*?)\n+Author:\s+(.*?)\n+Date:\s+(.*?)\n+\s+(.*)/)
+		array = raw_data.scan(/commit\s+(.*?)\n+.*\n*Author:\s+(.*?)\n+Date:\s+(.*?)\n+\s+(.*)/)
 		hashs = array.collect { |elements| { 'commit_id' => elements[0], 'author' => elements[1], 'date' => elements[2], 'message' => elements[3] }  }
 	end	
 end
@@ -69,12 +69,15 @@ class GitJenkinsRemoteTrigger
 		pull_cmd = "git pull origin #{@branch}"
 		puts pull_cmd
 		pull_result = %x[#{pull_cmd}]
+		puts '-----------------------------------'
 		puts pull_result
+		puts '-----------------------------------'
 		return if pull_result.include? 'Already up-to-date'
-		if pull_result.empty?
-			puts 'Error! Couldn\'t pull from git repository, please check your network setting and SSH key.'
-			return
-		end
+		# Seems the output is unstable, comment out this logic
+		#iif pull_result.empty?
+		#	puts 'Error! Couldn\'t pull from git repository, please check your network setting and SSH key.'
+		#	return
+		#end
 		@module_job_mappings.each do |module_name, job_name|
 			working_file = initialize_working_file(job_name)
 			build_data = YAML.load_file(working_file)
