@@ -66,6 +66,7 @@ class GitJenkinsRemoteTrigger
 
 	def run_once
 		create_or_switch_branch
+		%x[git fetch origin]
 		pull_cmd = "git pull origin #{@branch}"
 		puts pull_cmd
 		pull_result = %x[#{pull_cmd}]
